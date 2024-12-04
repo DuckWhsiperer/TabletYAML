@@ -1,0 +1,1127 @@
+kiosk_mode:
+  user_settings:
+    - users:
+        - tablets
+      hide_sidebar: true
+      hide_header: true
+sidebar:
+  width:
+    mobile: 0
+    tablet: 25
+    desktop: 20
+  digitalClock: true
+  digitalClockWithSeconds: false
+  twelveHourVersion: false
+  date: true
+  dateFormat: dddd, DD MMMM
+  period: false
+  hideTopMenu: false
+  sidebarMenu:
+    - action: navigate
+      navigation_path: /dashboard-tablet/tablethome
+      name: Overview
+      active: true
+      icon: mdi:view-dashboard
+    - action: navigate
+      navigation_path: /dashboard-tablet/downstairs-lights
+      name: Lights
+      active: true
+      icon: mdi:lightbulb-on
+    - action: navigate
+      navigation_path: /dashboard-tablet/music
+      name: Music
+      active: true
+      icon: mdi:music
+    - action: navigate
+      navigation_path: /dashboard-tablet/vacuum
+      name: Vacuum
+      active: true
+      icon: mdi:robot-vacuum-variant
+    - action: navigate
+      navigation_path: /dashboard-tablet/cal
+      name: Calendar
+      active: true
+      icon: mdi:calendar
+    - action: navigate
+      navigation_path: /dashboard-tablet/cameras
+      name: Cameras
+      active: true
+      icon: mdi:cctv
+  bottomCard:
+    type: custom:layout-card
+    cardOptions:
+      layout_type: custom:grid-layout
+      cards:
+        - type: custom:atomic-calendar-revive
+          enableModeChange: true
+          entities:
+            - entity: calendar.SHARED_CALENDAR
+              name: Shared
+            - entity: calendar.BIN_COLLECTIONS
+              name: Garbage Schedule
+            - entity: calendar.holidays_in_united_kingdom
+              name: Holidays
+          defaultMode: Event
+          hoursOnSameLine: true
+          showMonth: false
+          showAllDayHours: false
+          showEventDate: true
+          showCalendarName: false
+          showLastCalendarWeek: false
+          disableCalEventLink: false
+          disableCalLocationLink: false
+          showTimeRemaining: false
+          showDatePerEvent: false
+          showDate: false
+          showLoader: false
+          showRelativeTime: false
+          compactMode: true
+          showLocation: false
+          showHours: false
+          eventDateFormat: ddd D
+          card_mod:
+            style: |
+              ha-card{
+                box-shadow: none;
+                border-color: Transparent !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 0;
+                padding: 0 !important;
+              }
+              ha-card .single-event-container{
+                padding: 10px 0 !important;
+              }
+              ha-card .single-event-container:not(.daywrap):not(:first-child){
+                padding-top: 0 !important;
+              }
+              ha-card .daywrap{
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+              }
+              ha-card .event-left{
+                width: 60px;
+              }
+              ha-card .single-event-container{
+                line-height: 1.5em;
+              }
+        - type: conditional
+          condition: and
+          conditions:
+            - condition: state
+              entity: media_player.spotify
+              state_not: idle
+            - condition: state
+              entity: media_player.spotify
+              state_not: unavailable
+            - condition: state
+              entity: media_player.spotify
+              state_not: 'off'
+          card:
+            type: custom:bubble-card
+            card_type: media-player
+            entity: media_player.spotify
+            hide:
+              volume_button: true
+              power_button: true
+              next_button: true
+              previous_button: true
+  style: |
+    :host{
+      --sidebar-background: var(--ha-card-background,var(--card-background-color,#fff));
+    }
+    :host .digitalClock{
+      font-family: sans-serif;
+      font-weight: 500;
+      text-align: center;
+    }
+    :host .date{
+      font-size: 20px;
+      text-align: center;
+    }
+    :host .bottom layout-card{
+      width: 100%;
+    }
+views:
+  - type: sections
+    path: tablethome
+    title: tablethome
+    theme: noctis
+    sections:
+      - type: grid
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+          - type: custom:weather-card
+            entity: weather.pirateweather
+            details: false
+            forecast_type: hourly
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+          - type: custom:weather-card
+            entity: weather.pirateweather
+            current: false
+            details: false
+            forecast_type: daily
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+          - type: custom:bubble-card
+            card_type: separator
+          - type: custom:bubble-card
+            card_type: separator
+          - type: custom:bubble-card
+            card_type: button
+            tap_action:
+              action: navigate
+              navigation_path: '#QRCode'
+            name: QR Code
+            icon: mdi:qrcode
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            entity: input_button.blank_button
+            grid_options:
+              columns: 4
+              rows: 1
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: '#QRCode'
+              double_tap_action:
+                action: none
+              hold_action:
+                action: none
+          - type: custom:bubble-card
+            card_type: button
+            entity: input_button.blank_button
+            name: System
+            icon: mdi:cog
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: '#System'
+              double_tap_action:
+                action: none
+              hold_action:
+                action: none
+            grid_options:
+              columns: 4
+              rows: 1
+          - type: custom:bubble-card
+            card_type: button
+            entity: input_button.blank_button
+            name: Batteries
+            icon: mdi:battery-30
+            tap_action:
+              action: navigate
+              navigation_path: '#batteries'
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            button_action:
+              tap_action:
+                action: navigate
+                navigation_path: '#batteries'
+              double_tap_action:
+                action: none
+              hold_action:
+                action: none
+            grid_options:
+              columns: 4
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            icon: ''
+            heading_style: subtitle
+          - type: heading
+            heading_style: subtitle
+            heading: Key lights
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.lr_wall_pair
+            grid_options:
+              columns: 6
+              rows: 1
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.living_room
+            grid_options:
+              columns: 6
+              rows: 1
+            name: Lamps
+            icon: mdi:lamps
+          - type: custom:bubble-card
+            card_type: button
+            entity: switch.garage_lights_switch
+            name: Garage
+            icon: mdi:garage
+            grid_options:
+              columns: 6
+              rows: 1
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.all_downstairs
+            name: ''
+            tap_action:
+              action: none
+            button_action:
+              tap_action:
+                action: call-service
+                service: light.turn_off
+                target:
+                  entity_id: light.all_downstairs
+              double_tap_action:
+                action: none
+              hold_action:
+                action: none
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            grid_options:
+              columns: 6
+              rows: 1
+          - type: custom:bubble-card
+            card_type: button
+            button_type: slider
+            entity: light.gardenseating
+            sub_button:
+              - entity: light.gardenseating
+                icon: mdi:lightbulb-on
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  target:
+                    entity_id: light.gardenseating
+                  data:
+                    brightness_pct: 100
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: heading
+            icon: ''
+            heading_style: subtitle
+          - type: heading
+            icon: ''
+            heading_style: subtitle
+            heading: Kitchen Blind
+          - type: custom:bubble-card
+            card_type: button
+            name: Kitchen Blind
+            icon: mdi:blinds-open
+            tap_action:
+              action: none
+            double_tap_action:
+              action: none
+            hold_action:
+              action: none
+            entity: cover.kitchenblind
+            card_layout: large
+            sub_button:
+              - entity: cover.kitchenblind
+                icon: mdi:blinds-open
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  target:
+                    entity_id: cover.kitchenblind
+                  data:
+                    position: 100
+              - entity: cover.kitchenblind
+                icon: mdi:blinds
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  target:
+                    entity_id: cover.kitchenblind
+                  data:
+                    position: 70
+              - entity: cover.kitchenblind
+                icon: mdi:roller-shade
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  data:
+                    position: 30
+                  target:
+                    entity_id: cover.kitchenblind
+            button_type: slider
+          - type: custom:bubble-card
+            card_type: separator
+          - type: thermostat
+            entity: climate.living_room
+            features:
+              - type: climate-hvac-modes
+              - type: climate-preset-modes
+                style: dropdown
+            grid_options:
+              columns: 12
+              rows: 6
+            theme: noctis
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#QRCode'
+                show_header: false
+                button_type: name
+                name: Scan for Wifi
+                show_icon: true
+                icon: mdi:data-matrix-scan
+              - type: heading
+                icon: mdi:data-matrix-scan
+                heading: Scan for Wifi
+                heading_style: title
+                tap_action:
+                  action: none
+              - type: picture
+                image: PATH TO WIFI QR CODE
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#System'
+              - type: custom:bubble-card
+                card_type: button
+                entity: input_button.blank_button
+                name: Restart Zigbee
+                icon: mdi:zigbee
+                icon_color: red
+                tap_action:
+                  action: call-service
+                  service: homeassistant.reload_config_entry
+                  target:
+                    device_id: ID OF A ZIGBEE DEVICE
+              - type: custom:bubble-card
+                card_type: button
+                entity: input_button.blank_button
+                name: Restart HomeAssistant
+                icon: mdi:home-assistant
+                tap_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                button_action:
+                  tap_action:
+                    action: call-service
+                    target: {}
+                    service: homeassistant.restart
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#batteries'
+              - type: horizontal-stack
+                cards:
+                  - graph: line
+                    type: sensor
+                    entity: sensor.lumi_lumi_curtain_acn002_battery
+                    detail: 2
+                    icon: mdi:roller-shade
+                    name: Kitchen Blind
+              - type: horizontal-stack
+                cards:
+                  - graph: line
+                    type: sensor
+                    detail: 2
+                    entity: sensor.tablet_m10_battery_level
+                    name: Kitchen tab
+                    icon: mdi:tablet
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.tablet_m10_battery_state
+                    name: Kitchen Tab
+                    fill_container: true
+                    secondary_info: last-changed
+                    primary_info: state
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    double_tap_action:
+                      action: none
+              - type: horizontal-stack
+                cards:
+                  - graph: line
+                    type: sensor
+                    detail: 2
+                    entity: sensor.dusty_battery
+                    name: Dusty
+                    icon: mdi:robot-vacuum
+                  - graph: line
+                    type: sensor
+                    entity: sensor.outside_thermostat_battery
+                    detail: 1
+                    name: Garden Thermo
+                    icon: mdi:snowflake-thermometer
+    cards: []
+    max_columns: 10
+    dense_section_placement: true
+    badges: []
+  - type: sections
+    max_columns: 2
+    title: Downstairs lights
+    path: downstairs-lights
+    icon: mdi:home-floor-g
+    theme: noctis
+    sections:
+      - type: grid
+        cards:
+          - type: custom:bubble-card
+            card_type: separator
+        column_span: 2
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: subtitle
+            heading: Living & Dining Rooms
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.nspanel1_relay_2
+            name: Living Room Ceiling
+            icon: mdi:spotlight-beam
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.lr_dining_room_ceiling_light
+            name: Dining Room Ceiling
+            icon: mdi:vanity-light
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.lr_wall_pair
+            icon: mdi:coach-lamp-variant
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.main_lamp_switch
+            name: Main Lamp
+            icon: mdi:floor-lamp
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.little_lamp_switch
+            name: Little Lamp
+            icon: mdi:lamp
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.big_lamp_switch_2
+            name: Dining Lamp
+            icon: mdi:floor-lamp-torchiere-variant
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            rows: 1
+        column_span: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: subtitle
+            heading: Kitchen
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.kitchen_main_light
+            name: Kitchen Ceiling
+            icon: mdi:lightbulb-spot
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.utility
+            icon: mdi:ceiling-light
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.kitchen_main_light_2
+            name: Kitchen LEDs
+            icon: mdi:led-strip
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: subtitle
+            heading: Garden & Garage
+          - type: custom:bubble-card
+            card_type: button
+            button_type: slider
+            entity: light.gardenseating
+            name: Garden Seating
+            icon: mdi:string-lights
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            sub_button:
+              - entity: light.gardenseating
+                icon: mdi:lightbulb-on-50
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  target:
+                    entity_id: light.gardenseating
+                  data:
+                    brightness_pct: 50
+              - entity: light.gardenseating
+                icon: mdi:lightbulb-on
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  target:
+                    entity_id: light.gardenseating
+                  data:
+                    brightness_pct: 100
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.garage_lights_switch
+            icon: mdi:garage
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: separator
+            rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: Hall
+            heading_style: subtitle
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.hall_downstairs
+            name: Hall Light
+            icon: mdi:stairs
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+      - type: grid
+        cards:
+          - type: heading
+            heading: Office
+            heading_style: subtitle
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.office_lights
+            icon: mdi:ceiling-light-multiple
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            name: Office Ceiling
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.all_desk_lights
+            icon: mdi:desktop-classic
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            name: Desk Lights
+            card_layout: large
+            grid_options:
+              columns: 6
+              rows: 1
+      - type: grid
+        cards:
+          - type: heading
+            heading: Music Room
+            heading_style: subtitle
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.mr_big_lamp
+            name: Big Lamp
+            icon: mdi:floor-lamp-outline
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.mr_small_lamp
+            name: Small Lamp
+            icon: mdi:lamp-outline
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+            card_layout: large
+          - type: custom:bubble-card
+            card_type: button
+            entity: light.mrlava
+            name: Lava Lamp
+            icon: mdi:lava-lamp
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            grid_options:
+              columns: 6
+              rows: 1
+    cards: []
+  - type: sections
+    max_columns: 6
+    title: Upstairs lights
+    path: upstairs-lights
+    icon: mdi:home-floor-1
+    theme: noctis
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: New section
+  - type: sections
+    max_columns: 5
+    title: Cameras
+    path: cameras
+    icon: mdi:camera
+    theme: noctis
+    sections:
+      - type: grid
+        cards:
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.NAME
+            grid_options:
+              columns: full
+            view:
+              default: live
+        column_span: 2
+      - type: grid
+        cards:
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.NAME
+            view:
+              default: live
+      - type: grid
+        cards:
+          - type: custom:frigate-card
+            cameras:
+              - camera_entity: camera.NAME
+            view:
+              default: live
+    dense_section_placement: true
+    cards: []
+  - type: sections
+    max_columns: 2
+    title: Music
+    path: music
+    icon: mdi:music
+    theme: noctis
+    sections:
+      - type: grid
+        cards:
+          - type: custom:maxi-media-player
+            sections:
+              - player
+            entities:
+              - media_player.spotify
+            topFavorites:
+              - ''
+            dynamicVolumeSlider: false
+            dynamicVolumeSliderMax: 72
+            dynamicVolumeSliderThreshold: 1
+            artworkAsBackground: true
+            grid_options:
+              columns: full
+            mediaBrowserItemsPerRow: 5
+            showVolumeUpAndDownButtons: true
+            showFastForwardAndRewindButtons: true
+            fastForwardAndRewindStepSizeSeconds: 15
+            widthPercentage: 200
+            heightPercentage: 140
+            predefinedGroups:
+              - name: Downstairs
+                media: ''
+                entities:
+                  - player: media_player.living_room
+                    volume: 10
+                  - player: media_player.living_room_echo
+                    volume: 10
+              - name: Everywhere
+                media: ''
+                entities:
+                  - player: media_player.ECHO
+                  - player: media_player.kitchen
+                  - player: media_player.living_room
+                  - player: media_player.living_room_echo
+                  - player: media_player.ECHO
+            showBrowseMediaInPlayerSection: false
+            fallbackArtwork: https://i.ibb.co/8bTB76d/Spotify-Primary-Logo-RGB-Green2.png
+            visibility:
+              - condition: state
+                entity: media_player.spotify
+                state_not: 'off'
+              - condition: state
+                entity: media_player.spotify
+                state_not: idle
+              - condition: state
+                entity: media_player.spotify
+                state_not: unavailable
+        column_span: 2
+      - type: grid
+        cards:
+          - type: custom:maxi-media-player
+            sections:
+              - media browser
+            entities:
+              - media_player.spotify
+            topFavorites:
+              - ''
+            dynamicVolumeSlider: false
+            dynamicVolumeSliderMax: 72
+            dynamicVolumeSliderThreshold: 1
+            artworkAsBackground: true
+            grid_options:
+              columns: full
+            mediaBrowserItemsPerRow: 2
+            showVolumeUpAndDownButtons: true
+            showFastForwardAndRewindButtons: true
+            fastForwardAndRewindStepSizeSeconds: 15
+            widthPercentage: 100
+            heightPercentage: 35
+            predefinedGroups:
+              - name: Downstairs
+                media: ''
+                entities:
+                  - player: media_player.living_room
+                    volume: 10
+                  - player: media_player.living_room_echo
+                    volume: 10
+              - name: Everywhere
+                media: ''
+                entities:
+                  - player: media_player.ECHO
+                  - player: media_player.kitchen
+                  - player: media_player.living_room
+                  - player: media_player.living_room_echo
+                  - player: media_player.ECHO
+            title: Speakers & Browse
+            numberOfFavoritesToShow: 7
+            showAudioInputFormat: false
+            showSourceInPlayer: false
+            showBrowseMediaInPlayerSection: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+            visibility:
+              - condition: state
+                entity: media_player.spotify
+                state_not: 'off'
+              - condition: state
+                entity: media_player.spotify
+                state_not: idle
+              - condition: state
+                entity: media_player.spotify
+                state_not: unavailable
+      - type: grid
+        cards:
+          - type: custom:maxi-media-player
+            sections:
+              - volumes
+            entities:
+              - media_player.spotify
+            topFavorites:
+              - ''
+            dynamicVolumeSlider: false
+            dynamicVolumeSliderMax: 72
+            dynamicVolumeSliderThreshold: 1
+            artworkAsBackground: true
+            grid_options:
+              columns: full
+            mediaBrowserItemsPerRow: 5
+            showVolumeUpAndDownButtons: true
+            showFastForwardAndRewindButtons: true
+            fastForwardAndRewindStepSizeSeconds: 15
+            widthPercentage: 100
+            heightPercentage: 40
+            predefinedGroups:
+              - name: Downstairs
+                media: ''
+                entities:
+                  - player: media_player.living_room
+                    volume: 10
+                  - player: media_player.living_room_echo
+                    volume: 10
+              - name: Everywhere
+                media: ''
+                entities:
+                  - player: media_player.ECHO
+                  - player: media_player.kitchen
+                  - player: media_player.living_room
+                  - player: media_player.living_room_echo
+                  - player: media_player.ECHO
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+            visibility:
+              - condition: state
+                entity: media_player.spotify
+                state_not: 'off'
+              - condition: state
+                entity: media_player.spotify
+                state_not: idle
+              - condition: state
+                entity: media_player.spotify
+                state_not: unavailable
+      - type: grid
+        cards:
+          - type: custom:maxi-media-player
+            sections:
+              - media browser
+            entities:
+              - media_player.spotify
+            topFavorites:
+              - ''
+            dynamicVolumeSlider: false
+            dynamicVolumeSliderMax: 72
+            dynamicVolumeSliderThreshold: 1
+            artworkAsBackground: true
+            grid_options:
+              columns: full
+            mediaBrowserItemsPerRow: 1
+            showVolumeUpAndDownButtons: true
+            showFastForwardAndRewindButtons: true
+            fastForwardAndRewindStepSizeSeconds: 15
+            widthPercentage: 150
+            heightPercentage: 150
+            predefinedGroups:
+              - name: Downstairs
+                media: ''
+                entities:
+                  - player: media_player.living_room
+                    volume: 10
+                  - player: media_player.living_room_echo
+                    volume: 10
+              - name: Everywhere
+                media: ''
+                entities:
+                  - player: media_player.ECHO
+                  - player: media_player.kitchen
+                  - player: media_player.living_room
+                  - player: media_player.living_room_echo
+                  - player: media_player.ECHO
+            title: Choose which speaker;
+            numberOfFavoritesToShow: 11
+            showAudioInputFormat: false
+            showSourceInPlayer: false
+            showBrowseMediaInPlayerSection: true
+            mediaBrowserTitle: ' '
+            hideBrowseMediaButton: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+            visibility:
+              - condition: state
+                entity: media_player.spotifY
+                state_not: 'on'
+              - condition: state
+                entity: media_player.spotify
+                state_not: playing
+              - condition: state
+                entity: media_player.spotify
+                state_not: paused
+              - condition: state
+                entity: media_player.spotify
+                state_not: buffering
+        column_span: 2
+    cards: []
+  - type: panel
+    path: cal
+    title: Cal
+    cards:
+      - initial_view: dayGridMonth
+        type: calendar
+        entities:
+          - calendar.holidays_in_united_kingdom
+          - calendar.SHARED
+    theme: noctis
+  - type: sections
+    max_columns: 4
+    title: Vacuum
+    path: vacuum
+    icon: mdi:robot-vacuum-variant
+    sections:
+      - type: grid
+        cards:
+          - type: custom:vacuum-card
+            entity: vacuum.dusty
+            grid_options:
+              columns: 48
+              rows: auto
+            card_mod:
+              style: |
+                vacuum-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+          - type: custom:bubble-card
+            card_type: separator
+            grid_options:
+              columns: 48
+              rows: 1
+          - graph: line
+            type: sensor
+            entity: sensor.dusty_battery
+            detail: 2
+            name: Battery
+            grid_options:
+              columns: 15
+              rows: 4
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+          - show_name: true
+            show_icon: true
+            type: button
+            tap_action:
+              action: none
+            entity: binary_sensor.dusty_bin_full
+            name: Bin full if illuminated
+            icon: mdi:delete-empty
+            hold_action:
+              action: none
+            show_state: false
+            grid_options:
+              columns: 9
+              rows: 4
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent; 
+                  box-shadow: none; 
+                  border: none;
+                  }
+        column_span: 4
+    theme: noctis
+    dense_section_placement: true
+    cards: []
